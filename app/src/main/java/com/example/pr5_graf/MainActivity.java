@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         tv_timer = findViewById(R.id.tv_timer);
     }
-    protected void OnStart(View view)
+    public void onStart(View view)
     {
         active = !active;
         if(active)
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity
             timer = new Timer();
             mTimerTask = new MyTimerTask();
             timer.schedule(mTimerTask, 0, 1000);
-            Button button = findViewById(R.id.button3);
+            Button button = findViewById(R.id.button);
             button.setText("СТОП");
         }
         else {
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity
                 timer.cancel();
             }
             timer = null;
-            Button button = findViewById(R.id.button3);
+            Button button = findViewById(R.id.button);
             button.setText("ПРОДОЛЖИТЬ");
         }
     }
@@ -61,7 +61,38 @@ public class MainActivity extends AppCompatActivity
         timer = null;
         time = 0;
         tv_timer.setText("00:00:00");
-        Button button = findViewById(R.id.button2);
+        Button button = findViewById(R.id.button);
         button.setText("НАЧАТЬ");
+    }
+    class MyTimerTask extends TimerTask
+    {
+        @Override
+        public void run()
+        {
+            time++;
+            runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    String s_second = "";
+                    int hour = time/60/60;
+                    int min = time/60 - (hour*60);
+                    int second = time - (min*60) - (hour*60*60);
+                    if(second < 10) s_second = "0"+ second;
+                    else s_second = String.valueOf(second);
+
+                    String s_min = "";
+                    if(min < 10) s_min ="0"+min;
+                    else s_min = String.valueOf(min);
+
+                    String s_hour = "";
+                    if(hour < 10) s_hour ="0"+hour;
+                    else s_hour = String.valueOf(hour);
+
+                    tv_timer.setText(s_hour + ":" + s_min + ":" + s_second);
+                }
+            });
+        }
     }
 }
